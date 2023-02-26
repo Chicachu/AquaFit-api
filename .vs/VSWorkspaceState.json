@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\controllers",
+    "\\src\\models",
+    "\\src\\models\\class",
+    "\\src\\models\\client",
+    "\\src\\models\\_common",
+    "\\src\\services",
+    "\\src\\types"
+  ],
+  "SelectedNode": "\\src\\services\\ClientsService.ts",
+  "PreviewInSolutionExplorer": false
+}

@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^6.10.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.14.1",
+    "@types/uuid": "^9.0.1",
+    "nodemon": "^2.0.20",
+    "typescript": "^4.9.5"
+  },
+  "scripts": {
+    "start": "node server.ts",
+    "server": "nodemon server.ts",
+    "start:dev": "npx nodemon"
+  },
+  "name": "aquafit-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
