@@ -1,16 +1,16 @@
 import { InferSchemaType, model, Model, Schema } from "mongoose"
 import { Currency } from "../../types/enums/Currency"
-import { Days } from "../../types/enums/Days"
+import { ClassDays } from "../../types/enums/ClassDays"
 import { Meridiem } from "../../types/enums/Meridiem"
 
 const ClassSchema = new Schema(
   {
     _id: String,
-    days: [{
+    days: {
       type: String,
-      enum: Object.values(Days),
+      enum: Object.values(ClassDays),
       required: true
-    }], 
+    }, 
     startTime: {
       type: new Schema(
         {
@@ -40,10 +40,6 @@ const ClassSchema = new Schema(
     }],
     maxAttendees: {
       type: Number,
-      required: true
-    },
-    attendeeIds: {
-      type: [String],
       required: true
     }
   },

@@ -9,15 +9,20 @@ const PaymentSchema = new Schema(
       required: true
     }, 
     amount: {
-      currency: {
-        type: String, 
-        enum: Object.values(Currency), 
-        required: true
-      },
-      value: {
-        type: Number, 
-        required: true
-      }
+      type: new Schema(
+        {
+          currency: {
+            type: String, 
+            enum: Object.values(Currency), 
+            required: true
+          },
+          value: {
+            type: Number, 
+            required: true
+          }
+        }
+      ),
+      required: true
     }
   }, 
   { timestamps: true }

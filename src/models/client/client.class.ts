@@ -14,6 +14,10 @@ class ClientCollection extends Collection<IClientModel> {
   async updateClientDetails(clientId: string, update: object = {}): Promise<ClientDocument> {
     return await this.updateOne({ _id: clientId }, update)
   }
+
+  async getClientByEmail(email: string): Promise<ClientDocument> {
+    return await this.find({ email })
+  }
 }
 
 const clientCollection = new ClientCollection(ClientModel)

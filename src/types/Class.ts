@@ -1,18 +1,17 @@
 import { Currency } from "./enums/Currency";
-import { Days } from "./enums/Days";
+import { ClassDays } from "./enums/ClassDays";
 import { Meridiem } from "./enums/Meridiem";
 import { IDocument } from "./IDocument";
 
 export type Class = IDocument & {
-  days: Days[]
+  days: ClassDays
   startTime: {
-    time: number, 
+    time: number 
     meridiem: Meridiem
   }
   prices: {
-      currency: Currency,
+      currency: Currency
       value: number
-  }[],
-  maxAttendees: number, 
-  attendeeIds: string[]
+  }[]
+  maxAttendees: number
 }

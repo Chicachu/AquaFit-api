@@ -1,4 +1,4 @@
-import { Class } from './Class'
+import { Currency } from './enums/Currency'
 import { IDocument } from './IDocument'
 
 export type Client = IDocument & {
@@ -6,4 +6,8 @@ export type Client = IDocument & {
   lastName: string
   phoneNumber: string
   email: string
+  credits?: {
+    amount: number
+    currency: Currency
+  }
 }
