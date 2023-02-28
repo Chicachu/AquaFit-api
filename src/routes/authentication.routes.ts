@@ -3,6 +3,7 @@ import { authenticationController } from "../controllers/AuthenticationControlle
 
 const router = express.Router()
 
-router.post('/', authenticationController.authenticate)
+router.post('/auth', authenticationController.authenticate)
+router.post('/register', authenticationController.registerNewUser)
 
 export default router

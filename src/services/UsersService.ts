@@ -1,3 +1,4 @@
+import { access } from "fs"
 import { userCollection, UserCollection } from "../models/user/user.class"
 import AppError from "../types/AppError"
 import { User } from "../types/User"
@@ -24,6 +25,14 @@ class UsersService {
   async createNewUser(user: User): Promise<User> {
     try {
       return await this.userCollection.insertOne(user)
+    } catch (error: any) {
+      throw new AppError(error.message, 500)
+    }
+  }
+
+  async saveAccessToken(userId: string, accessToken: string): Promise<User> {
+    try {
+      return await this.userCollection.updateAccessToken(userId, accessToken)
     } catch (error: any) {
       throw new AppError(error.message, 500)
     }

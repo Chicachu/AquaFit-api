@@ -16,7 +16,8 @@ const UserSchema = new Schema(
       type: String,
       enum: Object.values(Role),
       required: true
-    }
+    }, 
+    accessToken: String
   }
 )
 
