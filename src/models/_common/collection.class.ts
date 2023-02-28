@@ -34,7 +34,7 @@ abstract class Collection<T> {
 
   async updateOne(query: object = {}, update: object = {}): Promise<any> {
     try {
-      return await this.model.updateOne(query, update, { returnDocument: 'after' })
+      return await this.model.updateOne(query, update, { new: true })
     } catch (error) {
       throw error
     }

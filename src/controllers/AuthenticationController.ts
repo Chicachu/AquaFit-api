@@ -7,9 +7,11 @@ import jwt from 'jsonwebtoken'
 import { clientsService } from '../services/ClientsService'
 import { User } from '../types/User'
 import { roles } from '../config/roles'
+import { Permission, Query } from 'accesscontrol'
+import { Role } from '../types/enums/Role'
 
 class AuthenticationController {
-  authenticate = asyncHandler(async (req: Request, res: Response) => {
+  login = asyncHandler(async (req: Request, res: Response) => {
     const { username, password } = req.body
 
     if (!username || !password) {
@@ -22,7 +24,7 @@ class AuthenticationController {
       throw new AppError(`Incorrect username or password! Try logging in again.`, 400)
     }
 
-    const authenticated = bcrypt.compare(password, user.password)
+    const authenticated = await bcrypt.compare(password, user.password)
 
     if (!authenticated) {
       throw new AppError(`Incorrect username or password! Try logging in again.`, 400)
@@ -41,9 +43,11 @@ class AuthenticationController {
       throw new AppError('Missing information, cannot register new user!', 400)
     }
 
-    const client = await clientsService.getClientByEmail(username)
-    if (!client) {
-      throw new AppError(`Email ${username} is not associated with an AquaFit client account. Try again or contact us to join!`, 400)
+    if (role == Role.CLIENT) {
+      const client = await clientsService.getClientByEmail(username)
+      if (!client) {
+        throw new AppError(`Email ${username} is not associated with an AquaFit client account. Try again or contact us to join!`, 400)
+      }
     }
 
     const encryptedPassword = await bcrypt.genSalt().then(salt => bcrypt.hash(password, salt)).then(hash => hash)
@@ -64,12 +68,30 @@ class AuthenticationController {
   checkAccess = function(action: string, resource: string) {
     return asyncHandler(async (req: Request, res: Response) => {
       try {
-        const permission = roles.can(req.user.role)
+        const permission = <Permission>roles().can(req.user.role)[action as keyof Query](resource)
+
+        if (!permission.granted) {
+          throw new AppError('You do not have access to this resource!', 401)
+        }
       } catch (error: any) {
         throw new AppError(error.message, 500)
       }
     })
   }
+
+  checkIfLoggedIn = asyncHandler(async (req: Request, res: Response) => {
+    try {
+      const user = res.locals.loggedInUser
+
+      if (!user) {
+        throw new AppError('You are not logged in. Please login to access this page.', 400)
+      }
+
+      req.user = user
+    } catch (error: any) {
+      throw new AppError(error.message, 500)
+    }
+  })
 }
 
 const authenticationController = new AuthenticationController()

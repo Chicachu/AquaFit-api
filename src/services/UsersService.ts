@@ -22,6 +22,14 @@ class UsersService {
     }
   }
 
+  async getUserById(userId: string): Promise<User> {
+    try {
+      return await this.userCollection.getUserByid(userId)
+    } catch (error: any) {
+      throw new AppError(error.message, 500)
+    }
+  }
+
   async createNewUser(user: User): Promise<User> {
     try {
       return await this.userCollection.insertOne(user)

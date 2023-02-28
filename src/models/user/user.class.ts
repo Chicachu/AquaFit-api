@@ -13,7 +13,11 @@ class UserCollection extends Collection<IUserModel> {
   }
 
   async getUser(username: string): Promise<UserDocument> {
-    return await this.find({ username })
+    return await this.findOne({ username })
+  }
+
+  async getUserByid(userId: string): Promise<UserDocument> {
+    return await this.findOne({ userId })
   }
 
   async addNewUser(user: User): Promise<UserDocument> {

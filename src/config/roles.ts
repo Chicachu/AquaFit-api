@@ -1,10 +1,10 @@
-import AccessControl from 'accesscontrol'
+import { AccessControl } from 'accesscontrol'
 import { Role } from '../types/enums/Role'
 
-const ac = new AccessControl.AccessControl()
+const ac = new AccessControl()
 const PROFILE='clientProfile'
 
-function roles(): AccessControl.AccessControl {
+function roles(): AccessControl {
   ac.grant(Role.CLIENT)
     .readOwn(PROFILE)
   
