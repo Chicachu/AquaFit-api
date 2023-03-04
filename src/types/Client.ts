@@ -5,7 +5,7 @@ export type Client = IDocument & {
   firstName: string
   lastName: string
   phoneNumber: string
-  email: string
+  email?: string
   credits?: {
     amount: number
     currency: Currency

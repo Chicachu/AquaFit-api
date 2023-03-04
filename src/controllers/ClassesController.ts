@@ -12,12 +12,13 @@ class ClassesController {
   })
 
   addNewClass = asyncHandler(async (req: Request, res: Response) => {
-    const { days, startTime, prices, maxAttendees } = req.body
-    if (!days || !startTime || !prices || !maxAttendees) {
+    const { location, days, startTime, prices, maxAttendees } = req.body
+    if (!location || !days || !startTime || !prices || !maxAttendees) {
       throw new AppError('Missing class information, cannot add new class!', 400)
     }
 
     const classToAdd: Class = {
+      location,
       days, 
       startTime,
       prices, 
@@ -27,6 +28,18 @@ class ClassesController {
     const newClass = await classesService.addNewClass(classToAdd)
     
     res.send({ class: newClass })
+  })
+
+  getClassesForMonth = asyncHandler(async (req: Request, res: Response) => {
+    const { month, year } = req.body
+
+    if (!month || !year) {
+      throw new AppError('Missing month or year, cannot get classes!', 400)
+    }
+
+    const classes = await classesService.getClassesForMonthOf(month, year)
+
+    res.send(classes)
   })
 }
 

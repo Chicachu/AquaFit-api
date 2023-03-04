@@ -35,7 +35,6 @@ const ScheduleSchema = new Schema(
       required: true
     },
     datesCheckedIn: [Date],
-    datesCancelled: [Date],
     discount: {
       type: new Schema(
         {

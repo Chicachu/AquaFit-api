@@ -5,12 +5,12 @@ import express from 'express'
 import jwt from 'jsonwebtoken'
 
 dotenv.config({ path: path.join(__dirname, '..', '.env') })
-const session = require('express-session')
-const MongoDBStore = require('connect-mongodb-session')(session)
-const store = new MongoDBStore({
-  uri: process.env.MONOGO_URI,
-  collection: 'sessions'
-})
+//const session = require('express-session')
+// const MongoDBStore = require('connect-mongodb-session')(session)
+// const store = new MongoDBStore({
+//   uri: process.env.MONOGO_URI,
+//   collection: 'sessions'
+// })
 
 const app = express()
 
@@ -27,6 +27,18 @@ app.use(async(req, res, next) => {
     }
 
     res.locals.loggedInUser = await usersService.getUserById(userId)
+  } 
+
+  const whitelist = 'http://localhost:4200'
+  res.header('Access-Control-Allow-Origin', whitelist)
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Access-Control-Headers, Access-Control-Request-Method, Access-Control-Request-Headers, x-access-token')
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
+  res.header('Content-Type', 'application/json')
+
+  if (req.method === "OPTIONS") {
+    res.status(200).end()
+  } else {
+    next()
   }
 })
 
