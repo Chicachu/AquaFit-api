@@ -3,6 +3,8 @@ import path from 'path'
 import { errorHandler } from './middleware/errorMiddleware'
 import express from 'express'
 import jwt from 'jsonwebtoken'
+import AppError from './types/AppError'
+import { usersService } from './services/UsersService'
 
 dotenv.config({ path: path.join(__dirname, '..', '.env') })
 //const session = require('express-session')
@@ -58,9 +60,10 @@ import schedulesRouter from './routes/schedules.routes'
 app.use('/api/schedules', schedulesRouter)
 
 import usersRouter from './routes/users.routes'
-import AppError from './types/AppError'
-import { usersService } from './services/UsersService'
 app.use('/api/users', usersRouter)
+
+import calendarRouter from './routes/calendar.routes'
+app.use('/api/calendar', calendarRouter)
 
 app.use(errorHandler)
 

@@ -29,18 +29,6 @@ class ClassesController {
     
     res.send({ class: newClass })
   })
-
-  getClassesForMonth = asyncHandler(async (req: Request, res: Response) => {
-    const { month, year } = req.body
-
-    if (!month || !year) {
-      throw new AppError('Missing month or year, cannot get classes!', 400)
-    }
-
-    const classes = await classesService.getClassesForMonthOf(month, year)
-
-    res.send(classes)
-  })
 }
 
 const classesController = new ClassesController()
