@@ -30,6 +30,7 @@ const ScheduleSchema = new Schema(
       type: Number, 
       required: true
     },
+    extraSessions: Number,
     startDate: {
       type: Date, 
       required: true

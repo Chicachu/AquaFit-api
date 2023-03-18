@@ -29,13 +29,18 @@ class SchedulesController {
   })
 
   getClientsInClass = asyncHandler(async (req: Request, res: Response) => {
-    const { classId } = req.params
+    const { classId, dateInMillis } = req.params
 
     if (!classId ) {
       throw new AppError(`Missing classId, cannot get clients in class!`, 400)
     }
 
-    const clientIdsInClass = await schedulesService.getClientIdsByClassId(classId)
+    if (!dateInMillis) {
+      throw new AppError('Missing date, cannot get clients in class!', 400)
+    }
+
+    const numberOfDays = await classesService.getNumberOfDaysPerWeek(classId)
+    const clientIdsInClass = await schedulesService.getClientIdsByClassId(classId, new Date(dateInMillis))
     const clients = await clientsService.getAllClients()
 
     let clientsInClass: Client[] = []

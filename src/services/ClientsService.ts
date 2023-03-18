@@ -17,6 +17,14 @@ class ClientsService {
 		}
 	}
 
+  async getClientsFromIds(clientIds: string[]): Promise<Client[]> {
+    try {
+      return await this.clientCollection.getClientsByIds(clientIds)
+    } catch (error: any) {
+			throw new  AppError(error.message, 500)
+		}
+  }
+
   async getClientByEmail(email: string): Promise<Client> {
     try {
       return await this.clientCollection.getClientByEmail(email)

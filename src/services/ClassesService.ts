@@ -21,6 +21,31 @@ class ClassesService {
 		}
 	}
 
+  async cancelClass(classId: string, date: Date): Promise<Class> {
+    try {
+      return await this.classCollection.cancelClass(classId, date)
+    } catch (error: any) {
+			throw new AppError(error.message, 500)
+		}
+  }
+
+  async getClassById(classId: string): Promise<Class> {
+    try {
+      return await this.classCollection.getClassById(classId)
+    } catch (error: any) {
+			throw new AppError(error.message, 500)
+		}
+  }
+
+  async getNumberOfDaysPerWeek(classId: string): Promise<number> {
+    try {
+      const foundClass = await this.classCollection.getClassById(classId)
+      return foundClass.days.length
+    } catch (error: any) {
+			throw new AppError(error.message, 500)
+		}
+  }
+
   async addNewClass(classDoc: Class): Promise<Class> {
     try {
       return await this.classCollection.insertOne(classDoc)

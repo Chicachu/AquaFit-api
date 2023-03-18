@@ -7,6 +7,7 @@ export type Schedule = IDocument & {
   classId: string
   clientId: string
   sessions: number
+  extraSessions?: number
   startDate: Date
   datesCheckedIn?: Date[]
   datesCancelled?: Date[]

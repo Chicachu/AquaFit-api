@@ -14,6 +14,10 @@ class ScheduleCollection extends Collection<IScheduleModel> {
   async getSchedulesByClassId(classId: string): Promise<ScheduleDocument[]> {
     return await this.find({ classId })
   }
+
+  async giveClientExtraClass(clientId: string, classId: string): Promise<ScheduleDocument> {
+    return await this.updateOne({ classId, clientId }, {$inc: { extraSessions: 1 }})
+  }
 }
 
 const scheduleCollection = new ScheduleCollection(ScheduleModel)

@@ -14,7 +14,7 @@ class CalendarController {
 
     const date = new Date()
     date.setMonth(parseInt(month as string))
-    date.setFullYear(parseInt(year as string))
+    date.setFullYear(parseInt(year as string))                        
 
     const classes = await classesService.getClassesForMonthOf(date.getMonth(), date.getFullYear())
     const monthlySchedule = await calendarService.getMonthlySchedule(date, classes)

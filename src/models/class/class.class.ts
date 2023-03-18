@@ -11,12 +11,12 @@ class ClassCollection extends Collection<IClassModel> {
     return await this.findOne({ _id: classId })
   }
 
-  async cancelClass(classId: string): Promise<ClassDocument> {
-    return this.updateOne({ _id: classId }, { $push: { datesCancelled: new Date() }})
+  async cancelClass(classId: string, date: Date): Promise<ClassDocument> {
+    return this.updateOne({ _id: classId }, { $push: { datesCancelled: date }})
   }
 
-  async checkIntoClass(classId: string): Promise<ClassDocument> {
-    return this.updateOne({ _id: classId }, { $push: { datesCheckedIn: new Date() }})
+  async checkIntoClass(classId: string, date: Date): Promise<ClassDocument> {
+    return this.updateOne({ _id: classId }, { $push: { datesCheckedIn: date }})
   }
 }
 

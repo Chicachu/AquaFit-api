@@ -11,6 +11,12 @@ class ClientCollection extends Collection<IClientModel> {
     return await this.find()
   }
 
+  async getClientsByIds(clientIds: string[]): Promise<ClientDocument[]> {
+    return await this.find({
+      _id: { $in: clientIds }
+    })
+  }
+
   async updateClientDetails(clientId: string, update: object = {}): Promise<ClientDocument> {
     return await this.updateOne({ _id: clientId }, update)
   }
