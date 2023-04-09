@@ -6,4 +6,5 @@ export type DailyClass = {
   location: Location
   checkedIn: boolean
   cancelled: boolean
+  lastDayClientIds: string[] | undefined
 }

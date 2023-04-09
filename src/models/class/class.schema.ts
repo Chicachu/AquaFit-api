@@ -17,6 +17,10 @@ const ClassSchema = new Schema(
       enum: Object.values(Weekday),
       required: true
     }], 
+    startDate: {
+      type: Date,
+      required: true
+    },
     startTime: {
       type: new Schema(
         {

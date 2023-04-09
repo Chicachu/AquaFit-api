@@ -1,37 +1,11 @@
-import { DailyClass } from "../types/DailyClass";
 import { MonthClassSchedule } from "../types/MonthClassSchedule";
 
 const DAY_MS = 60 * 60 * 24 * 1000;
 
 class CalendarService {
-  async getMonthlySchedule(date: Date, classes: MonthClassSchedule[]): Promise<Map<Number, DailyClass[]>> {
+  async getMonthlySchedule(date: Date, classes: MonthClassSchedule[]): Promise<Array<Date>> {
     const dates = this._getCalendarDays(date)
-    const monthlySchedule = this._mapClassesToDates(dates, classes)
-
-    return monthlySchedule
-  }
-
-  private _mapClassesToDates(dates: Date[], classes: MonthClassSchedule[]): Map<Number, DailyClass[]> {
-    const monthlySchedule = new Map<Number, DailyClass[]>()
-
-    dates.forEach((day) => {
-      monthlySchedule.set(this._getDateWithoutTime(day).getTime(), [])
-    })
-
-    classes.forEach((mClass) => {
-      mClass.classes.forEach((c) => {
-        const dayClasses = monthlySchedule.get(this._getDateWithoutTime(new Date(c.date)).getTime())!
-        dayClasses.push({
-          classId: mClass.classId,
-          startTime: new Date(c.date),
-          location: mClass.location, 
-          checkedIn: c.checkedIn, 
-          cancelled: c.cancelled
-        })
-      })
-    })
-
-    return monthlySchedule
+    return dates
   }
 
   private _getCalendarDays(date = new Date): Array<Date> {
@@ -52,12 +26,6 @@ class CalendarService {
     return this._range(1,7)
       .map(num => new Date(firstDayOfMonth - DAY_MS * num))
       .find(dt => dt.getDay() === 0)
-  }
-  
-  private _getDateWithoutTime(date: Date): Date {
-    const dateWithoutTime = new Date(date)
-    dateWithoutTime.setHours(0, 0, 0, 0)
-    return dateWithoutTime
   }
 }
 

@@ -37,15 +37,6 @@ class ClassesService {
 		}
   }
 
-  async getNumberOfDaysPerWeek(classId: string): Promise<number> {
-    try {
-      const foundClass = await this.classCollection.getClassById(classId)
-      return foundClass.days.length
-    } catch (error: any) {
-			throw new AppError(error.message, 500)
-		}
-  }
-
   async addNewClass(classDoc: Class): Promise<Class> {
     try {
       return await this.classCollection.insertOne(classDoc)

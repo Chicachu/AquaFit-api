@@ -1,7 +1,5 @@
-import { off } from "process";
 import { scheduleCollection, ScheduleCollection } from "../models/schedule/schedule.class";
 import AppError from "../types/AppError";
-import { Client } from "../types/Client";
 import { Schedule } from "../types/Schedule";
 
 class SchedulesService {
@@ -43,6 +41,26 @@ class SchedulesService {
     }
   }
 
+  async getAllClientIdsByClassId(classId: string): Promise<string[]> {
+    try {
+      const schedules = await this.scheduleCollection.getSchedulesByClassId(classId)
+      return await this._getClientIdsFromSchedules(schedules)
+    } catch (error: any) {
+      throw new AppError(error.message, 500)
+    }
+  }
+
+  async getLastDayClientIdsByClassId(classId: string, date: Date): Promise<Map<number, string[]>> {
+    try {
+      const schedules = await this.scheduleCollection.getSchedulesByClassId(classId)
+      const lastDayClientIds = await this._getLastDayClientIds(schedules, date)
+
+      return lastDayClientIds
+    } catch (error: any) {
+      throw new AppError(error.message, 500)
+    }
+  }
+
   async giveClientExtraClass(clientId: string, classId: string): Promise<Schedule> {
     try {
       return await this.scheduleCollection.giveClientExtraClass(clientId, classId)
@@ -60,29 +78,65 @@ class SchedulesService {
     }
   }
 
+  async checkInClient(clientId: string, classId: string, date: Date, checkIn: boolean): Promise<Schedule> {
+    try {
+      if (checkIn) {
+        return await this.scheduleCollection.checkInClient(clientId, classId, date)
+      } else {
+        return await this.scheduleCollection.undoCheckIn(clientId, classId, date)
+      }
+    } catch (error: any) {
+      throw new AppError(error.message, 500)
+    }
+  }
+
+  private async _getLastDayClientIds(schedules: Schedule[], date: Date): Promise<Map<number, string[]>> {
+    const lastDayClientIds=  new Map<number, string[]>()
+    schedules.forEach((s) => {
+      const lastDate = this._calculateLastDate(s)
+
+      if (lastDate.getMonth() == date.getMonth()) {
+        let clientIds = lastDayClientIds.get(this._getDateWithoutTime(lastDate).getTime())
+        if (!clientIds) {
+          clientIds = []
+        }
+        clientIds.push(s.clientId)
+        lastDayClientIds.set(this._getDateWithoutTime(lastDate).getTime(), clientIds)
+      }
+    })
+
+    return lastDayClientIds
+  }
+
   private async _filterCurrentSchedules(schedules: Schedule[], date: Date): Promise<Schedule[]> {
     const currentSchedules = schedules.filter((s) => {
-      let offset = this._getOffset(s.sessions, s.startDate.getDay())
-      
-      const lastDate = new Date(s.startDate.getTime())
-      lastDate.setDate(lastDate.getDate() + 21 + offset)
-
-      const daysPerWeek = s.sessions / 4
-      if (s.extraSessions) {
-        const numWeeksExtra = Math.floor((s.extraSessions / daysPerWeek)) * 7
-        lastDate.setDate(lastDate.getDate() + numWeeksExtra)
-
-        const numSessionsLeftover = s.extraSessions % daysPerWeek
-        for (let i = 0; i < numSessionsLeftover; i++) {
-          const extraOffset = this._getOffset(s.sessions, lastDate.getDay(), true)
-          lastDate.setDate(lastDate.getDate() + extraOffset)
-        }
-      }
+      const lastDate = this._calculateLastDate(s)
 
       return s.startDate <= date && date <= lastDate
     })
 
     return currentSchedules
+  }
+
+  private _calculateLastDate(schedule: Schedule): Date {
+    let offset = this._getOffset(schedule.sessions, schedule.startDate.getDay())
+      
+    const lastDate = new Date(schedule.startDate.getTime())
+    lastDate.setDate(lastDate.getDate() + 21 + offset)
+
+    const daysPerWeek = schedule.sessions / 4
+    if (schedule.extraSessions) {
+      const numWeeksExtra = Math.floor((schedule.extraSessions / daysPerWeek)) * 7
+      lastDate.setDate(lastDate.getDate() + numWeeksExtra)
+
+      const numSessionsLeftover = schedule.extraSessions % daysPerWeek
+      for (let i = 0; i < numSessionsLeftover; i++) {
+        const extraOffset = this._getOffset(schedule.sessions, lastDate.getDay(), true)
+        lastDate.setDate(lastDate.getDate() + extraOffset)
+      }
+    }
+
+    return lastDate
   }
 
   private _getOffset(numSessions: number, day: number, extra?: boolean): number {
@@ -114,6 +168,12 @@ class SchedulesService {
 
   private async _getClassIdsFromSchedules(schedules: Schedule[]): Promise<String[]> {
     return schedules.map((s) => s.classId)
+  }
+
+  private _getDateWithoutTime(date: Date): Date {
+    const dateWithoutTime = new Date(date)
+    dateWithoutTime.setHours(0, 0, 0, 0)
+    return dateWithoutTime
   }
 }
 

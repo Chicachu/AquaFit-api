@@ -25,22 +25,18 @@ class SchedulesController {
     }
 
     const newSchedule = await schedulesService.addClientToClass(schedule)
-    res.send({ schedule: newSchedule })
+    res.send(newSchedule)
   })
 
   getClientsInClass = asyncHandler(async (req: Request, res: Response) => {
-    const { classId, dateInMillis } = req.params
+    const { classId } = req.params
 
     if (!classId ) {
       throw new AppError(`Missing classId, cannot get clients in class!`, 400)
     }
 
-    if (!dateInMillis) {
-      throw new AppError('Missing date, cannot get clients in class!', 400)
-    }
-
-    const numberOfDays = await classesService.getNumberOfDaysPerWeek(classId)
-    const clientIdsInClass = await schedulesService.getClientIdsByClassId(classId, new Date(dateInMillis))
+    const clientIdsInClass = await schedulesService.getAllClientIdsByClassId(classId)
+    const currentClientIds = await schedulesService.getClientIdsByClassId(classId, new Date())
     const clients = await clientsService.getAllClients()
 
     let clientsInClass: Client[] = []
@@ -48,7 +44,7 @@ class SchedulesController {
       clientsInClass = clients.filter((c) => clientIdsInClass.includes(c.id!))
     }
     
-    res.send({ clients: clientsInClass })
+    res.send({ clients: clientsInClass, currentClientIds })
   })
 
   getClassesByClientId = asyncHandler(async (req: Request, res: Response) => {
@@ -66,7 +62,7 @@ class SchedulesController {
       clientsClasses = classes.filter((c) => clientsClassIds.includes(c.id!))
     }
     
-    res.send({ classes: clientsClasses })
+    res.send(clientsClasses)
   })
 
   getUnpaidSchedulesByClientId = asyncHandler(async (req: Request, res: Response) => {
@@ -84,6 +80,27 @@ class SchedulesController {
     }
 
     res.send({ schedules: filteredSchedules })
+  })
+
+  checkInClient = asyncHandler(async (req: Request, res: Response) => {
+    const { clientId, classId, dateInMillis } = req.params
+    const { checkIn } = req.body
+
+    if (!clientId ) {
+      throw new AppError(`Missing clientId, cannot check in client!`, 400)
+    }
+
+    if (!classId ) {
+      throw new AppError(`Missing classId, cannot check in client!`, 400)
+    }
+
+    if (!dateInMillis) {
+      throw new AppError('Missing date, cannot check in client!', 400)
+    }
+
+    await schedulesService.checkInClient(clientId, classId, new Date(dateInMillis), checkIn)
+
+    res.send()
   })
 }
 

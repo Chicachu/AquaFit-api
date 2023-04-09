@@ -8,12 +8,12 @@ class ClientsController {
 	getClients = asyncHandler(async (req: Request, res: Response) => {
 		const clients = await clientsService.getAllClients()
 
-		res.send({clients: clients})
+		res.send(clients)
 	})
 
 	addClient = asyncHandler(async (req: Request, res: Response) => {
     const { firstName, lastName, phoneNumber, email } = req.body
-    if (!firstName || !lastName || !phoneNumber || !email) {
+    if (!firstName || !lastName || !phoneNumber) {
       throw new AppError('Missing client information, cannot add client!', 400)
     }
 
@@ -25,7 +25,7 @@ class ClientsController {
     }
 
 		const client = await clientsService.addNewClient(clientInfo)
-		res.send({ client: client })
+		res.send(client)
 	})
 	 
 	updateClient = asyncHandler(async (req: Request, res: Response) => {
@@ -41,7 +41,7 @@ class ClientsController {
     }
 
     const client = await clientsService.updateClientDetails(clientId, phoneNumber, email)
-		res.send({ client: client })
+		res.send(client)
 	})
 }
 
